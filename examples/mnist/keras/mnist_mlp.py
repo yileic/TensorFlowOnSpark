@@ -121,7 +121,8 @@ def main_fun(args, ctx):
       print('Test loss:', score[0])
       print('Test accuracy:', score[1])
 
-      tf_feed.terminate()
+      if args.mode == "spark":
+          tf_feed.terminate()
 
 if __name__ == '__main__':
     import argparse
