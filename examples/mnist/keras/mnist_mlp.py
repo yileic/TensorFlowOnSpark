@@ -7,7 +7,7 @@ from __future__ import print_function
 
 from pyspark.context import SparkContext
 from pyspark.conf import SparkConf
-from com.yahoo.ml.tf import TFCluster, TFNode
+from tensorflowonspark import TFCluster, TFNode
 
 import os
 
@@ -89,7 +89,7 @@ def main_fun(args, ctx):
       K.set_session(sess)
 
       ckpt_callback = ModelCheckpoint(filepath=os.path.join(args.model, "ckpt.{epoch:02d}.hd5"))
-      tb_callback = TensorBoard(log_dir=args.logdir, histogram_freq=0, write_graph=True, write_images=True)
+      tb_callback = TensorBoard(log_dir=args.logdir, histogram_freq=1, write_graph=True, write_images=True)
 
       if args.mode == "tf":
           # load entire dataset in memory and train/validate
@@ -99,6 +99,7 @@ def main_fun(args, ctx):
               verbose=2,
               callbacks=[ckpt_callback, tb_callback],
               validation_data=(x_test, y_test))
+#          # use a generator even though entire dataset is in memory
 #          history = model.fit_generator(
 #              generator=generate_local_data(x_train, y_train, args.batch_size),
 #              steps_per_epoch=args.steps_per_epoch,
